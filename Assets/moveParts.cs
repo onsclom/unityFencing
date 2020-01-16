@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class moveLight : MonoBehaviour
+public class moveParts : MonoBehaviour
 {
 
     GameObject player;
     GameObject light;
+    GameObject sword;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,6 +16,7 @@ public class moveLight : MonoBehaviour
         light = Find("Point Light 2D");
 */
 
+        print("testing");
         foreach (Transform child in transform)
         {
             if (child.name=="Player")
@@ -25,6 +27,11 @@ public class moveLight : MonoBehaviour
             {
                 light=child.gameObject;
             }
+            else if (child.name=="Sword")
+            {
+                print("found!");
+                sword=child.gameObject;
+            }
         }
     }
 
@@ -32,5 +39,7 @@ public class moveLight : MonoBehaviour
     void Update()
     {
         light.transform.position = player.transform.position;
+        sword.transform.position = new Vector3(player.transform.position.x+1, player.transform.position.y+.25f, 1.0f);
+        
     }
 }
