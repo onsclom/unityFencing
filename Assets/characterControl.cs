@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class movement : MonoBehaviour
+public class characterControl : MonoBehaviour
 {
     public float speed = 6.0f;
-    public float jumpForce;
-    public float moveHorizontal;
     public string leftControl;
     public string rightControl;
 
-    private int dir = 0; //-1 left, 0 neither, 1 right
+    public int dir = 0; //-1 left, 0 neither, 1 right
     private bool leftHeld = false;
     private bool rightHeld = false;
 
@@ -19,15 +17,12 @@ public class movement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb2d = GetComponent<Rigidbody2D>();
+        rb2d = this.transform.Find("Player").gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        moveHorizontal = Input.GetAxisRaw(rightControl) + -1*Input.GetAxisRaw(leftControl);
-        //float moveVertical = Input.GetAxis("Vertical");
-        
         if (Input.GetButtonDown(leftControl))
         {
             leftHeld = true;
