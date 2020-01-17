@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class characterControl : MonoBehaviour
 {
-    public float speed = 6.0f;
+    public float curSpeed;
     public string leftControl;
     public string rightControl;
+    public float defSpeed;
 
     public int dir = 0; //-1 left, 0 neither, 1 right
     private bool leftHeld = false;
@@ -62,6 +63,7 @@ public class characterControl : MonoBehaviour
 
     void FixedUpdate()
     {        
-        rb2d.velocity = new Vector3 (dir * speed, rb2d.velocity.y, 0.0f);
+        rb2d.velocity = new Vector3 (dir * curSpeed , rb2d.velocity.y, 0.0f);
+        this.transform.Find("Player").transform.position = new Vector3 (this.transform.Find("Player").transform.position.x + ((float)dir*curSpeed) * (float)Time.deltaTime, this.transform.Find("Player").transform.position.y, this.transform.Find("Player").transform.position.z);
     }
 }

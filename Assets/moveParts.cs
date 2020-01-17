@@ -9,6 +9,7 @@ public class moveParts : MonoBehaviour
     GameObject sword;
     GameObject freeformLight;
     public float offset;
+    public bool flipSwordSide = false;
 
     // Start is called before the first frame update
     void Start()
@@ -24,7 +25,16 @@ public class moveParts : MonoBehaviour
     void Update()
     {
         light.transform.position = player.transform.position;
-        sword.transform.position = new Vector3(player.transform.position.x+offset, player.transform.position.y+.25f, 1.0f);
+
+        if (flipSwordSide == true)
+        {
+            sword.transform.position = new Vector3(player.transform.position.x+offset*-1, player.transform.position.y+.25f, -1f);
+        }
+        else
+        {
+            sword.transform.position = new Vector3(player.transform.position.x+offset, player.transform.position.y+.25f, -2f);
+        }
+
         freeformLight.transform.position = sword.transform.position;
     }
 }

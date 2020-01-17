@@ -7,6 +7,7 @@ public class attack : MonoBehaviour
     // Start is called before the first frame update
     public string attackButton;    
     public int cooldownFrames;
+    public bool disabled = false;
 
     private bool attacking = false;
     private int attackFrame = 0;
@@ -14,26 +15,35 @@ public class attack : MonoBehaviour
     //weapon data
     private int weaponStartup = 3;
     private int weaponOut = 10;
-    private int whiffLag = 25;
+    private int whiffLag = 30;
+
+    private moveParts moveParts;
+    private characterControl charControl;
 
     void Start()
     {
-        print(gameObject.GetComponent<moveParts>().offset);
+        moveParts = GetComponent<moveParts>();
+        charControl = GetComponent<characterControl>();
     }
 
     // Update is called once per frame
     void Update()
-    {
-        if (!attacking && Input.GetButtonDown(attackButton))
+    {        
+        if (!attacking && Input.GetAxisRaw(attackButton)==1 && !disabled)
         {
-            print("attack");
             attacking = true;
         }
 
         if (attacking)
         {
-            attackFrame+=1;
+            disabled = true;
+            attackFrame += 1;
+            cooldownFrames = 10;
 
+            if (attackFrame <= weaponStartup)
+            {
+                changeWeaponOffset( (float)attackFrame/(float)weaponStartup );
+            }
             if (attackFrame > weaponStartup)
             {
                 changeWeaponOffset(1);
@@ -42,9 +52,25 @@ public class attack : MonoBehaviour
             if (attackFrame > weaponStartup + weaponOut)
             {
                 changeWeaponOffset(0);
-                attacking=false;
+                attacking = false;
                 attackFrame = 0;
+                cooldownFrames = whiffLag;
             }
+        }
+
+        if (disabled)
+        {
+            cooldownFrames -= 1;
+            
+            if (cooldownFrames < 0)
+            {
+                disabled = false;
+            }
+        }
+
+        if (disabled)
+        {
+            charControl.curSpeed = ( ( (float)whiffLag - (float)cooldownFrames ) / whiffLag ) * charControl.defSpeed;
         }
     }
 
@@ -53,8 +79,9 @@ public class attack : MonoBehaviour
         
     }
 
+    //this func expects float between 0 and 1
     void changeWeaponOffset(float newValue)
     {
-        gameObject.GetComponent<moveParts>().offset=newValue;
+        moveParts.offset=newValue;
     }
 }
