@@ -70,6 +70,8 @@ public class gameManager : MonoBehaviour
                 particleSys.gameObject.transform.position = rightChar.transform.Find("Player").transform.position + new Vector3(0,0,-5);
                 var main = particleSys.main;
                 main.startColor = rightChar.transform.Find("Player").gameObject.GetComponent<SpriteRenderer>().color;
+                var shape = particleSys.shape;
+                shape.rotation = new Vector3 (0, 45, 0);
 
                 particleSys.Play();
                 rightChar.SetActive(false);
@@ -84,6 +86,8 @@ public class gameManager : MonoBehaviour
                 particleSys.gameObject.transform.position = leftChar.transform.Find("Player").transform.position + new Vector3(0,0,-5);
                 var main = particleSys.main;
                 main.startColor = leftChar.transform.Find("Player").gameObject.GetComponent<SpriteRenderer>().color;
+                var shape = particleSys.shape;
+                shape.rotation = new Vector3 (0, -45, 0);
 
                 particleSys.Play();
                 leftChar.SetActive(false);
