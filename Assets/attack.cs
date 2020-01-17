@@ -9,7 +9,7 @@ public class attack : MonoBehaviour
     public int cooldownFrames;
     public bool disabled = false;
 
-    private bool attacking = false;
+    public bool attacking = false;
     private int attackFrame = 0;
 
     //weapon data
@@ -38,7 +38,7 @@ public class attack : MonoBehaviour
         {
             disabled = true;
             attackFrame += 1;
-            cooldownFrames = 10;
+            cooldownFrames = whiffLag;
 
             if (attackFrame <= weaponStartup)
             {
