@@ -27,7 +27,7 @@ public class attack : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {        
         if (!attacking && Input.GetAxisRaw(attackButton)==1 && !disabled)
         {

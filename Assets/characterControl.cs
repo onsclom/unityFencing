@@ -9,6 +9,10 @@ public class characterControl : MonoBehaviour
     public string rightControl;
     public float defSpeed;
 
+    public int favoredDirection;
+
+    public Vector3 startLocation;
+
     public int dir = 0; //-1 left, 0 neither, 1 right
     private bool leftHeld = false;
     private bool rightHeld = false;
@@ -58,6 +62,28 @@ public class characterControl : MonoBehaviour
             {
                 dir = 0;
             }
+        }
+    }
+
+    public void reset()
+    {
+        rb2d.velocity = new Vector3 (0, 0 ,0);
+        transform.Find("Player").transform.position = startLocation;
+        dir = 0;
+        leftHeld = Input.GetAxisRaw(leftControl)==1;
+        rightHeld = Input.GetAxisRaw(rightControl)==1;
+
+        if (leftHeld && rightHeld)
+        {
+            dir = favoredDirection;
+        }
+        else if (leftHeld)
+        {
+            dir = -1;
+        }
+        else if (rightHeld)
+        {
+            dir = 1;
         }
     }
 

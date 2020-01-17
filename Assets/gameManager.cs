@@ -8,6 +8,11 @@ public class gameManager : MonoBehaviour
     public GameObject leftChar;
     public GameObject rightChar;
 
+    public GameObject leftScoreObj;
+    public GameObject rightScoreObj;
+    public int leftScoreCount;
+    public int rightScoreCount;
+
     public Transform leftPreFab;
     public Transform rightPreFab;
 
@@ -17,7 +22,7 @@ public class gameManager : MonoBehaviour
     private bool leftHit;
     private bool rightHit;
     private bool roundEnd;
-    private int resetCountdown;
+    private float resetCountdown;
 
     public void collision(GameObject winner)
     {
@@ -44,6 +49,16 @@ public class gameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //check if either y < -5
+        if (leftChar.active && rightChar.active && leftChar.transform.Find("Player").transform.position.y <= -5)
+        {
+            rightHit = true;
+        }
+        else if (rightChar.active && rightChar.active && rightChar.transform.Find("Player").transform.position.y <= -5)
+        {
+            leftHit = true;
+        }
+
         if (leftHit || rightHit)
         {
             if (leftHit && rightHit)
@@ -52,9 +67,7 @@ public class gameManager : MonoBehaviour
             }
             else if (leftHit)
             {
-                print("left won!");
-
-                particleSys.gameObject.transform.position = rightChar.transform.Find("Player").transform.position;
+                particleSys.gameObject.transform.position = rightChar.transform.Find("Player").transform.position + new Vector3(0,0,-5);
                 var main = particleSys.main;
                 main.startColor = rightChar.transform.Find("Player").gameObject.GetComponent<SpriteRenderer>().color;
 
@@ -62,13 +75,13 @@ public class gameManager : MonoBehaviour
                 rightChar.SetActive(false);
 
                 roundEnd = true;
-                resetCountdown = resetTime;
+                resetCountdown = (float)resetTime;
+
+                leftScoreCount += 1;
             }
             else
             {
-                print("right won!");
-
-                particleSys.gameObject.transform.position = leftChar.transform.Find("Player").transform.position;
+                particleSys.gameObject.transform.position = leftChar.transform.Find("Player").transform.position + new Vector3(0,0,-5);
                 var main = particleSys.main;
                 main.startColor = leftChar.transform.Find("Player").gameObject.GetComponent<SpriteRenderer>().color;
 
@@ -77,6 +90,8 @@ public class gameManager : MonoBehaviour
                 
                 roundEnd = true;
                 resetCountdown = resetTime;
+
+                rightScoreCount += 1;
             }
             leftHit = false;
             rightHit = false;
@@ -84,25 +99,34 @@ public class gameManager : MonoBehaviour
 
         if (roundEnd)
         {
-            resetCountdown-=1;
+            resetCountdown-=1.0f*Time.deltaTime*60.0f;
             
             if (resetCountdown < 0)
             {
                 reset();
             }
         }
+
+        leftScoreObj.GetComponent<UnityEngine.UI.Text>().text = leftScoreCount.ToString();
+        rightScoreObj.GetComponent<UnityEngine.UI.Text>().text = rightScoreCount.ToString();
     }
 
     void reset()
     {
+        print("reset called");
+        particleSys.Stop();
+        particleSys.Clear();
         print("RESET!");
         roundEnd = false;
 
-        //delete both characters
-        //recreate them?
+        //one of them should be inactive
         leftChar.SetActive(true);
         rightChar.SetActive(true);
-    
+
+        //call public reset function in character control for each
+        leftChar.GetComponent<characterControl>().reset();
+        rightChar.GetComponent<characterControl>().reset();
+        
     }
 }
 
