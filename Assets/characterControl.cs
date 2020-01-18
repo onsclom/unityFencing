@@ -85,11 +85,19 @@ public class characterControl : MonoBehaviour
         {
             dir = 1;
         }
+
+        GetComponent<attack>().disabled=false;
+        GetComponent<attack>().attacking=false;
+        GetComponent<attack>().attackFrame=0;
+        GetComponent<moveParts>().offset=0;
+        GetComponent<characterControl>().curSpeed=GetComponent<characterControl>().defSpeed;
+
+        
     }
 
     void FixedUpdate()
     {        
-        rb2d.velocity = new Vector3 (dir * curSpeed , rb2d.velocity.y, 0.0f);
+        //rb2d.velocity = new Vector3 (dir * curSpeed , rb2d.velocity.y, 0.0f);
         this.transform.Find("Player").transform.position = new Vector3 (this.transform.Find("Player").transform.position.x + ((float)dir*curSpeed) * (float)Time.deltaTime, this.transform.Find("Player").transform.position.y, this.transform.Find("Player").transform.position.z);
     }
 }

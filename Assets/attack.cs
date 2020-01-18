@@ -10,7 +10,7 @@ public class attack : MonoBehaviour
     public bool disabled = false;
 
     public bool attacking = false;
-    private int attackFrame = 0;
+    public int attackFrame = 0;
 
     //weapon data
     private int weaponStartup = 3;

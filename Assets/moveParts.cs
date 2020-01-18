@@ -22,7 +22,7 @@ public class moveParts : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    public void Update()
     {
         light.transform.position = player.transform.position;
 

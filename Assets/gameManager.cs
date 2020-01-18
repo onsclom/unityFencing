@@ -8,6 +8,7 @@ public class gameManager : MonoBehaviour
     public GameObject leftChar;
     public GameObject rightChar;
 
+    public int tieForce;
     public GameObject leftScoreObj;
     public GameObject rightScoreObj;
     public int leftScoreCount;
@@ -26,16 +27,27 @@ public class gameManager : MonoBehaviour
 
     public void collision(GameObject winner)
     {
-        if (winner == leftChar)
+        //check which sword offset is bigger!
+        var leftSwordOffset = leftChar.GetComponent<moveParts>().offset;
+        var rightSwordOffset = rightChar.GetComponent<moveParts>().offset;
+
+        if (leftSwordOffset > rightSwordOffset)
         {
             print("left hit");
             leftHit = true;
         }
-        else
+        else if (leftSwordOffset < rightSwordOffset)
         {
             print("right hit");
             rightHit = true;
         }
+        else
+        {
+            //they both hit
+            leftHit = true;
+            rightHit = true;
+        }
+
     }
 
     void Start()
@@ -47,14 +59,14 @@ public class gameManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         //check if either y < -5
         if (leftChar.active && rightChar.active && leftChar.transform.Find("Player").transform.position.y <= -5)
         {
             rightHit = true;
         }
-        else if (rightChar.active && rightChar.active && rightChar.transform.Find("Player").transform.position.y <= -5)
+        else if (rightChar.active && leftChar.active && rightChar.transform.Find("Player").transform.position.y <= -5)
         {
             leftHit = true;
         }
@@ -63,6 +75,15 @@ public class gameManager : MonoBehaviour
         {
             if (leftHit && rightHit)
             {
+                //give force to both
+                //rightChar.transform.Find("Player").gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector3(-1,0,0) * tieForce);
+                //leftChar.transform.Find("Player").gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector3(1,0,0) * tieForce);
+
+                var moveSpeed = rightChar.GetComponent<characterControl>().defSpeed;
+                rightChar.transform.Find("Player").transform.position = rightChar.transform.Find("Player").transform.position + new Vector3(.1f,0,0);
+                leftChar.transform.Find("Player").transform.position = leftChar.transform.Find("Player").transform.position - new Vector3(.1f,0,0);
+                rightChar.transform.Find("Player").gameObject.GetComponent<Rigidbody2D>().velocity = (new Vector3(1*tieForce,0,0));
+                leftChar.transform.Find("Player").gameObject.GetComponent<Rigidbody2D>().velocity = (new Vector3(-1*tieForce,0,0));
                 print("TIE WOWw");
             }
             else if (leftHit)
@@ -130,8 +151,13 @@ public class gameManager : MonoBehaviour
         //call public reset function in character control for each
         leftChar.GetComponent<characterControl>().reset();
         rightChar.GetComponent<characterControl>().reset();
+    
+        leftChar.GetComponent<moveParts>().Update();
+        rightChar.GetComponent<moveParts>().Update();
         
     }
+
+    
 }
 
             
