@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems; 
 using UnityEngine.UI;
 
-public class textChange : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class textChange : MonoBehaviour
 {
     public Text theText;
 
@@ -13,7 +13,7 @@ public class textChange : MonoBehaviour, IPointerEnterHandler, IPointerExitHandl
         theText = GetComponentInChildren<Text>();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnPointerEnter()
     {
         theText.color = Color.red; //Or however you do your color
         print("on");

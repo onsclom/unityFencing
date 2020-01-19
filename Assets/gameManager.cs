@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class gameManager : MonoBehaviour
 {
@@ -25,6 +26,10 @@ public class gameManager : MonoBehaviour
     private bool roundEnd;
     private float resetCountdown;
 
+    public GameObject countdownCanvas;
+    private float gameStart = 3;
+    public bool firstCountdown = true;
+
     public void collision(GameObject winner)
     {
         //check which sword offset is bigger!
@@ -35,11 +40,13 @@ public class gameManager : MonoBehaviour
         {
             print("left hit");
             leftHit = true;
+            print(leftSwordOffset + " " + rightSwordOffset);
         }
         else if (leftSwordOffset < rightSwordOffset)
         {
             print("right hit");
             rightHit = true;
+            print(leftSwordOffset + " " + rightSwordOffset);
         }
         else
         {
@@ -56,6 +63,14 @@ public class gameManager : MonoBehaviour
         leftHit = false;
         rightHit = false;
         
+    }
+
+    void Update()
+    {
+        if (firstCountdown)
+        {
+            countdown();
+        }
     }
 
     // Update is called once per frame
@@ -136,6 +151,18 @@ public class gameManager : MonoBehaviour
         rightScoreObj.GetComponent<UnityEngine.UI.Text>().text = rightScoreCount.ToString();
     }
 
+    void countdown()
+    {
+        gameStart -= Time.deltaTime;
+        countdownCanvas.transform.Find("Text").gameObject.GetComponent<UnityEngine.UI.Text>().text = Mathf.Ceil(gameStart).ToString();        
+
+        if (gameStart <= 0)
+        {
+            firstCountdown = false;
+            countdownCanvas.SetActive(false);
+        }
+    }
+
     void reset()
     {
         print("reset called");
@@ -145,6 +172,8 @@ public class gameManager : MonoBehaviour
         roundEnd = false;
 
         //one of them should be inactive
+        leftChar.SetActive(false);
+        rightChar.SetActive(false);
         leftChar.SetActive(true);
         rightChar.SetActive(true);
 

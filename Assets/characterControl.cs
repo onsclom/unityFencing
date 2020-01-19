@@ -19,6 +19,8 @@ public class characterControl : MonoBehaviour
 
     private Rigidbody2D rb2d;
 
+    public gameManager gm;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -96,7 +98,9 @@ public class characterControl : MonoBehaviour
     }
 
     void FixedUpdate()
-    {        
+    {   
+        if (gm.firstCountdown)
+            return;     
         //rb2d.velocity = new Vector3 (dir * curSpeed , rb2d.velocity.y, 0.0f);
         this.transform.Find("Player").transform.position = new Vector3 (this.transform.Find("Player").transform.position.x + ((float)dir*curSpeed) * (float)Time.deltaTime, this.transform.Find("Player").transform.position.y, this.transform.Find("Player").transform.position.z);
     }
