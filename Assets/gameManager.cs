@@ -103,6 +103,7 @@ public class gameManager : MonoBehaviour
             }
             else if (leftHit)
             {
+                slowdown();
                 particleSys.gameObject.transform.position = rightChar.transform.Find("Player").transform.position + new Vector3(0,0,-5);
                 var main = particleSys.main;
                 main.startColor = rightChar.transform.Find("Player").gameObject.GetComponent<SpriteRenderer>().color;
@@ -119,6 +120,7 @@ public class gameManager : MonoBehaviour
             }
             else
             {
+                slowdown();
                 particleSys.gameObject.transform.position = leftChar.transform.Find("Player").transform.position + new Vector3(0,0,-5);
                 var main = particleSys.main;
                 main.startColor = leftChar.transform.Find("Player").gameObject.GetComponent<SpriteRenderer>().color;
@@ -139,7 +141,7 @@ public class gameManager : MonoBehaviour
 
         if (roundEnd)
         {
-            resetCountdown-=1.0f*Time.deltaTime*60.0f;
+            resetCountdown-=1.0f*Time.unscaledDeltaTime*60.0f;
             
             if (resetCountdown < 0)
             {
@@ -153,7 +155,7 @@ public class gameManager : MonoBehaviour
 
     void countdown()
     {
-        gameStart -= Time.deltaTime;
+        gameStart -= Time.unscaledDeltaTime;
         countdownCanvas.transform.Find("Text").gameObject.GetComponent<UnityEngine.UI.Text>().text = Mathf.Ceil(gameStart).ToString();        
 
         if (gameStart <= 0)
@@ -161,6 +163,17 @@ public class gameManager : MonoBehaviour
             firstCountdown = false;
             countdownCanvas.SetActive(false);
         }
+    }
+
+    void slowdown()
+    {
+        Time.timeScale = 0.2f;
+        Time.fixedDeltaTime = 0.02f * Time.timeScale;
+
+        var distance = (leftChar.transform.Find("Player").gameObject.transform.position.x + .5) - (rightChar.transform.Find("Player").gameObject.transform.position.x - .5);
+
+        leftChar.GetComponent<attack>().correctSword((float)distance);
+        rightChar.GetComponent<attack>().correctSword((float)distance);
     }
 
     void reset()
@@ -180,10 +193,14 @@ public class gameManager : MonoBehaviour
         //call public reset function in character control for each
         leftChar.GetComponent<characterControl>().reset();
         rightChar.GetComponent<characterControl>().reset();
-    
+        leftChar.GetComponent<attack>().frozenFrames=0;
+        rightChar.GetComponent<attack>().frozenFrames=0;
         leftChar.GetComponent<moveParts>().Update();
         rightChar.GetComponent<moveParts>().Update();
-        
+
+        //set time back to normal
+        Time.timeScale = 1;
+        Time.fixedDeltaTime = 0.02F ;
     }
 
     

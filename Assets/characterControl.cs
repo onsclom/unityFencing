@@ -17,6 +17,9 @@ public class characterControl : MonoBehaviour
     private bool leftHeld = false;
     private bool rightHeld = false;
 
+    public Color defaultColor;
+    public Color disabledColor;
+
     private Rigidbody2D rb2d;
 
     public gameManager gm;
@@ -24,6 +27,8 @@ public class characterControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        defaultColor = this.transform.Find("Player").GetComponent<SpriteRenderer>().color;
+        disabledColor = (this.defaultColor+Color.black)/2;
         rb2d = this.transform.Find("Player").gameObject.GetComponent<Rigidbody2D>();
     }
 
@@ -65,6 +70,15 @@ public class characterControl : MonoBehaviour
                 dir = 0;
             }
         }
+
+        if (GetComponent<attack>().disabled)
+        {
+            this.transform.Find("Player").GetComponent<SpriteRenderer>().color = disabledColor;
+        }
+        else
+        {
+            this.transform.Find("Player").GetComponent<SpriteRenderer>().color = defaultColor;
+        }
     }
 
     public void reset()
@@ -99,7 +113,7 @@ public class characterControl : MonoBehaviour
 
     void FixedUpdate()
     {   
-        if (gm.firstCountdown)
+        if (gm.firstCountdown || GetComponent<attack>().frozenFrames > 0)
             return;     
         //rb2d.velocity = new Vector3 (dir * curSpeed , rb2d.velocity.y, 0.0f);
         this.transform.Find("Player").transform.position = new Vector3 (this.transform.Find("Player").transform.position.x + ((float)dir*curSpeed) * (float)Time.deltaTime, this.transform.Find("Player").transform.position.y, this.transform.Find("Player").transform.position.z);

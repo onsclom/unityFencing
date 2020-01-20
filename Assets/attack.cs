@@ -6,16 +6,18 @@ public class attack : MonoBehaviour
 {
     // Start is called before the first frame update
     public string attackButton;    
-    public int cooldownFrames;
+    public float cooldownFrames;
     public bool disabled = false;
 
     public bool attacking = false;
-    public int attackFrame = 0;
+    public float attackFrame = 0f;
+    public float frozenFrames = 0;
 
     //weapon data
-    private int weaponStartup = 3;
-    private int weaponOut = 10;
-    private int whiffLag = 30;
+    private float weaponStartup = 3.0f;
+    private float weaponOut = 10f;
+    private float whiffLag = 30f;
+    private float frozenLag = 15f;
 
     private moveParts moveParts;
     private characterControl charControl;
@@ -27,18 +29,26 @@ public class attack : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
-    {        
+    void Update()
+    {
         if (!attacking && Input.GetAxisRaw(attackButton)==1 && !disabled)
         {
             attacking = true;
         }
 
+        if (frozenFrames > 0)
+        {
+            frozenFrames -= Time.deltaTime*60f;
+        }
+
         if (attacking)
         {
             disabled = true;
-            attackFrame += 1;
+            attackFrame += (float)Time.deltaTime * 60f;
+            //print(attackFrame);
+            //print("time delta is " + Time.deltaTime);
             cooldownFrames = whiffLag;
+            frozenFrames = frozenLag;
 
             if (attackFrame <= weaponStartup)
             {
@@ -54,29 +64,35 @@ public class attack : MonoBehaviour
                 changeWeaponOffset(0);
                 attacking = false;
                 attackFrame = 0;
-                cooldownFrames = whiffLag;
             }
         }
 
         if (disabled)
         {
-            cooldownFrames -= 1;
+            cooldownFrames -= Time.deltaTime*60f;
             
             if (cooldownFrames < 0)
             {
                 disabled = false;
             }
         }
+    }
 
-        if (disabled)
-        {
-            charControl.curSpeed = ( ( (float)whiffLag - (float)cooldownFrames ) / whiffLag ) * charControl.defSpeed;
-        }
+    void FixedUpdate()
+    {        
+        
     }
 
     void attackUpdate()
     {
         
+    }
+
+    public void correctSword(float distance)
+    {   
+        //get distance between 2 chars
+        attackFrame = (Mathf.Abs(distance)/weaponStartup)*weaponStartup; 
+        print("distance is " + distance);
     }
 
     //this func expects float between 0 and 1
